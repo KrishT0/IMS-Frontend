@@ -34,8 +34,10 @@ const Login: FC = () => {
       <div className="flex flex-col gap-5 items-center">
         {!otpSent ? (
           <input
-            className="border-2 border-gray-300 p-2 mt-5 rounded-md w-96 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            type="text"
+            className="border-2 border-gray-300 p-2 mt-5 rounded-md w-96 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+            type="number"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
             placeholder="10-digit Phone number"
           />
         ) : (
@@ -46,7 +48,8 @@ const Login: FC = () => {
             renderInput={(props) => <input {...props} />}
             inputStyle={{
               border: "2px solid #a3a3a3",
-              marginRight: "10px",
+              marginRight: "5px",
+              marginLeft: "5px",
               borderColor: "#a3a3a3",
               height: "40px",
               width: "40px",
@@ -58,7 +61,11 @@ const Login: FC = () => {
             }}
           />
         )}
-        <button className="bg-blue-500 text-white p-2 mt-1 rounded-md w-96 text-center focus:outline-none focus:border-transparent focus:ring-4 focus:ring-blue-200">
+        <button
+          className={`bg-black text-white ${
+            otpSent && "max-w-[290px]"
+          } p-2 mt-1 rounded-md w-96 text-center focus:outline-none focus:border-transparent focus:ring-2 focus:ring-gray-400`}
+        >
           {loading ? (
             <ImSpinner2 className=" w-full animate-spin text-xl" />
           ) : !otpSent ? (
