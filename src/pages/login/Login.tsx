@@ -8,6 +8,7 @@ import {
   signInWithPhoneNumber,
   ConfirmationResult,
 } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -22,6 +23,24 @@ const Login: FC = () => {
   const [otpSent, setOtpSent] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const navigate = useNavigate();
+
+  const onVerifyCaptcha = () => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        {
+          size: "invisible",
+          callback: () => {
+            onSignup();
+          },
+          "expired-callback": () => {},
+        }
+      );
+    }
+  };
+
   const onSignup = () => {
     console.log(phoneNumber);
     setLoading(true);
@@ -32,7 +51,7 @@ const Login: FC = () => {
     console.log(formatedPhoneNumber);
 
     signInWithPhoneNumber(auth, formatedPhoneNumber, appVerifier)
-      .then((confirmationResult) => {
+      .then((confirmationResult: ConfirmationResult) => {
         window.confirmationResult = confirmationResult;
         setLoading(false);
         setOtpSent(true);
@@ -43,22 +62,41 @@ const Login: FC = () => {
       });
   };
 
-  const onVerifyCaptcha = () => {
-    if (window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        //@ts-ignore
-        "recaptcha-container",
-        {
-          size: "invisible",
-          callback: () => {
-            onSignup();
-          },
-          "expired-callback": () => {},
-        },
-        auth
-      );
+  const onVerifyOtp = () => {
+    if (!window.confirmationResult) return;
+    window.confirmationResult
+      .confirm(otp)
+      .then((result) => {
+        console.log(result.user);
+        navigate("/home");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const loginButtonRole = () => {
+    if (otpSent) {
+      onVerifyOtp();
+    } else {
+      onSignup();
     }
   };
+
+  // const onResendOtp = () => {
+  //   onVerifyCaptcha();
+  //   const formatedPhoneNumber = `+91${phoneNumber}`;
+  //   signInWithPhoneNumber(auth, formatedPhoneNumber, window.recaptchaVerifier)
+  //     .then((confirmationResult: ConfirmationResult) => {
+  //       window.confirmationResult = confirmationResult;
+  //       setLoading(false);
+  //       setOtpSent(true);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setLoading(false);
+  //     });
+  // };
 
   const handleOtpChange = (newOtp: string) => {
     setOtp(newOtp.replace(/\s/g, ""));
@@ -116,7 +154,7 @@ const Login: FC = () => {
           className={`bg-black text-white ${
             otpSent && "max-w-[290px]"
           } p-2 mt-1 rounded-md w-96 text-center focus:outline-none focus:border-transparent focus:ring-2 focus:ring-gray-400`}
-          onClick={onSignup}
+          onClick={loginButtonRole}
         >
           {loading ? (
             <ImSpinner2 className=" w-full animate-spin text-xl" />

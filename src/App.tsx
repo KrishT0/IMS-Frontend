@@ -2,6 +2,7 @@ import { FC } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./layout/Root";
 import Login from "./pages/login/Login";
+import Home from "./pages/Home/Home";
 
 const router = createBrowserRouter([
   {
@@ -15,8 +16,8 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
-        path: "/details",
-        element: <div>details</div>,
+        path: "/home",
+        element: <Home />,
       },
     ],
   },
