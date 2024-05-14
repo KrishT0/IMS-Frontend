@@ -2,13 +2,63 @@ import { FC, useState } from "react";
 import OtpInput from "react-otp-input";
 import { MdPhoneAndroid } from "react-icons/md";
 import { ImSpinner2 } from "react-icons/im";
+import { auth } from "../../firebase/firebase.config";
+import {
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  ConfirmationResult,
+} from "firebase/auth";
+
+declare global {
+  interface Window {
+    recaptchaVerifier: RecaptchaVerifier;
+    confirmationResult: ConfirmationResult;
+  }
+}
 
 const Login: FC = () => {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [otp, setOtp] = useState<string>("");
   const [otpSent, setOtpSent] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  console.log(otp);
+
+  const onSignup = () => {
+    console.log(phoneNumber);
+    setLoading(true);
+    onVerifyCaptcha();
+    const appVerifier = window.recaptchaVerifier;
+
+    const formatedPhoneNumber = `+91${phoneNumber}`;
+    console.log(formatedPhoneNumber);
+
+    signInWithPhoneNumber(auth, formatedPhoneNumber, appVerifier)
+      .then((confirmationResult) => {
+        window.confirmationResult = confirmationResult;
+        setLoading(false);
+        setOtpSent(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
+
+  const onVerifyCaptcha = () => {
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        //@ts-ignore
+        "recaptcha-container",
+        {
+          size: "invisible",
+          callback: () => {
+            onSignup();
+          },
+          "expired-callback": () => {},
+        },
+        auth
+      );
+    }
+  };
 
   const handleOtpChange = (newOtp: string) => {
     setOtp(newOtp.replace(/\s/g, ""));
@@ -17,6 +67,7 @@ const Login: FC = () => {
   return (
     <div className=" text-center mt-52">
       <h1 className="text-6xl font-semibold mb-5">Login</h1>
+      <div id="recaptcha-container"></div>
 
       {!otpSent ? (
         <p className="mt-5 text-2xl">Please enter your phone number </p>
@@ -65,6 +116,7 @@ const Login: FC = () => {
           className={`bg-black text-white ${
             otpSent && "max-w-[290px]"
           } p-2 mt-1 rounded-md w-96 text-center focus:outline-none focus:border-transparent focus:ring-2 focus:ring-gray-400`}
+          onClick={onSignup}
         >
           {loading ? (
             <ImSpinner2 className=" w-full animate-spin text-xl" />
