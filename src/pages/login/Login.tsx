@@ -72,6 +72,7 @@ const Login: FC = () => {
       })
       .catch((error) => {
         console.log(error);
+        setOtp("");
       });
   };
 
