@@ -135,7 +135,7 @@ const Login: FC = () => {
             value={otp}
             onChange={handleOtpChange}
             numInputs={6}
-            renderInput={(props) => <input {...props} />}
+            renderInput={(props) => <input {...props} type="number" />}
             inputStyle={{
               border: "2px solid #a3a3a3",
               marginRight: "5px",

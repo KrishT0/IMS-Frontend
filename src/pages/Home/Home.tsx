@@ -31,9 +31,9 @@ const Home: FC = () => {
       <div className="text-7xl text-center">Users</div>
       <div>
         <ul className=" flex items-start justify-center flex-col">
-          {users.map((u) => {
+          {users.map((u: Users) => {
             return (
-              <li className=" flex gap-2 ">
+              <li className=" flex gap-2 " key={u.mobile}>
                 <div>{u.name}</div>
                 <div>{u.age}</div>
                 <div>{u.mobile}</div>
