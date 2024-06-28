@@ -1,8 +1,9 @@
-import { FC } from "react";
+import { FC, lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Root from "./layout/Root";
-import Login from "./pages/login/Login";
-import Home from "./pages/Home/Home";
+import Loader from "./components/Loader";
+const Root = lazy(() => import("./layout/Root"));
+const Login = lazy(() => import("./pages/login/Login"));
+const Home = lazy(() => import("./pages/Home/Home"));
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
 ]);
 
 const App: FC = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <Suspense fallback={<Loader />}>
+      <RouterProvider router={router} />
+    </Suspense>
+  );
 };
 export default App;
