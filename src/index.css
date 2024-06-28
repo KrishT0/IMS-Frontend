@@ -1,9 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Jersey+15&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html {
-  font-family: "Jersey 15", sans-serif;
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
 }
