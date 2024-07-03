@@ -1,7 +1,10 @@
 import { FC, lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Loader from "./components/Loader";
+import ProtectedRoute from "./utils/ProtectedRoute";
+
 const Root = lazy(() => import("./layout/Root"));
+const MainLayout = lazy(() => import("./layout/MainLayout"));
 const Login = lazy(() => import("./pages/login/Login"));
 const Home = lazy(() => import("./pages/Home/Home"));
 
@@ -13,12 +16,21 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        path: "/",
         element: <Login />,
       },
       {
-        path: "/home",
-        element: <Home />,
+        path: "app",
+        element: (
+          <ProtectedRoute>
+            <MainLayout />
+          </ProtectedRoute>
+        ),
+        children: [
+          {
+            path: "home",
+            element: <Home />,
+          },
+        ],
       },
     ],
   },
