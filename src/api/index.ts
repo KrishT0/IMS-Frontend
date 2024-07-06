@@ -1,9 +1,10 @@
 import axios from "axios";
 import {
   getInternsForMentorsBodyType,
-  internForMentorType,
-  user as UserType,
+  InternForMentorType,
+  User as UserType,
   verifyMobileNumberBodyType,
+  sendFeedbackBodyType,
 } from "../types";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -27,7 +28,7 @@ export const verifyMobileNumber: (
 
 export const getInternsForMentors: (
   body: getInternsForMentorsBodyType
-) => Promise<internForMentorType[]> = async (
+) => Promise<InternForMentorType[]> = async (
   body: getInternsForMentorsBodyType
 ) => {
   try {
@@ -40,9 +41,29 @@ export const getInternsForMentors: (
         },
       }
     );
-    return response.data.interns as internForMentorType[];
+    return response.data.interns as InternForMentorType[];
   } catch (error) {
     console.log(error);
     throw new Error("Failed to get interns for mentors");
+  }
+};
+
+export const sendFeedback: (
+  body: sendFeedbackBodyType
+) => Promise<{ message: string }> = async (body: sendFeedbackBodyType) => {
+  try {
+    const response = await axios.post(
+      `${baseUrl}/api/mentor/feedback_submission`,
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to send feedback");
   }
 };
