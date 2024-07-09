@@ -1,7 +1,7 @@
 export type Intern = {
-  _id: String;
-  name: String;
-  department: String;
+  _id: string;
+  name: string;
+  department: string;
 };
 
 export type InternFeedback = {
@@ -40,8 +40,9 @@ export type getInternsForMentorsBodyType = {
 };
 
 export type sendFeedbackBodyType = {
-  mentor_id: string;
+  mentor_id: string | undefined;
   intern_id: string;
-  rating: number;
-  comment: string;
+  ratings: number;
+  feedback: string;
+  month: number;
 };
