@@ -5,8 +5,8 @@ export type Intern = {
 };
 
 export type InternFeedback = {
-  comment: String;
-  rating: Number;
+  comment: string;
+  rating: number;
 };
 
 export type InternWorkReport = {
@@ -20,7 +20,10 @@ export type User = {
   name: string;
   role: string;
   age: number;
+  department: string;
   mobile: string;
+  intern?: string[];
+  mentor?: string;
   token?: string;
 };
 
@@ -30,13 +33,18 @@ export type InternForMentorType = {
   _id: string;
 };
 
+export type MentorForInternType = {
+  name: string;
+  _id: string;
+};
+
 //API Body Types
 export type verifyMobileNumberBodyType = {
-  mobile: String;
+  mobile: string;
 };
 
 export type getInternsForMentorsBodyType = {
-  mentor_id: String;
+  mentor_id: string;
 };
 
 export type sendFeedbackBodyType = {
@@ -45,4 +53,9 @@ export type sendFeedbackBodyType = {
   ratings: number;
   feedback: string;
   month: number;
+};
+
+export type setMentorBodyType = {
+  intern_id: string;
+  mentor_id: string;
 };
