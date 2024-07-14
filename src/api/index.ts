@@ -6,6 +6,7 @@ import {
   verifyMobileNumberBodyType,
   sendFeedbackBodyType,
   setMentorBodyType,
+  uploadingWorkDetailsBodyType,
 } from "../types";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -108,5 +109,51 @@ export const getMentorsForInterns: (body: {
   } catch (error) {
     console.log(error);
     throw new Error("Failed to get mentors for interns");
+  }
+};
+
+export const uploadingWorkDetails: (
+  body: uploadingWorkDetailsBodyType
+) => Promise<{
+  message: string;
+  status: number;
+}> = async (body: uploadingWorkDetailsBodyType) => {
+  try {
+    const response = await axios.post(
+      `${baseUrl}/api/intern/uploading_work_details`,
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    if (response.status === 409) {
+      return {
+        message: response.data.message,
+        status: response.status,
+      } as { message: string; status: number };
+    } else {
+      return {
+        message: response.data.message,
+        status: response.status,
+      } as { message: string; status: number };
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const message =
+        error.response?.data.message ?? "An unknown error occurred";
+      const status = error.response?.status ?? 500;
+      return {
+        message,
+        status,
+      };
+    } else {
+      console.log(error);
+      return {
+        message: "An unknown error occurred",
+        status: 500,
+      };
+    }
   }
 };

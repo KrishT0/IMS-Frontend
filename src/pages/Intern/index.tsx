@@ -1,7 +1,12 @@
 import { FC, useEffect, useState } from "react";
-import { InternWorkReport, MentorForInternType } from "../../types";
+import { MentorForInternType } from "../../types";
 import { useUser } from "../../store/user";
-import { selectingMentor, getMentorsForInterns } from "../../api";
+import {
+  selectingMentor,
+  getMentorsForInterns,
+  uploadingWorkDetails,
+} from "../../api";
+import dayjs from "dayjs";
 import toast, { Toaster } from "react-hot-toast";
 
 const Intern: FC = () => {
@@ -52,8 +57,34 @@ const Intern: FC = () => {
     }
   };
 
-  const submitClickHandler = () => {
-    console.table([projects, workDone, workHours]);
+  const submitClickHandler = async () => {
+    try {
+      const intern_id = user?._id!;
+      const name = user?.name!;
+      const month = dayjs().month() + 1;
+      const body = {
+        name,
+        intern_id,
+        month,
+        project_worked: projects,
+        work_description: workDone,
+        workHours,
+      };
+
+      const response = await uploadingWorkDetails(body);
+      if (response.status === 409) {
+        toast.error(response.message, { style: { background: "#fde0e0" } });
+      } else {
+        if (response && response.message) {
+          toast.success(response.message);
+          setProjects("");
+          setWorkDone("");
+          setWorkHours(0);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -76,6 +107,15 @@ const Intern: FC = () => {
               className="border-2 rounded-md w-full"
               value={workDone}
               onChange={(e) => setWorkDone(e.target.value)}
+            />
+          </div>
+          <div>
+            <p className="text-xl">Work Hours:</p>
+            <input
+              className="border-2 rounded-md w-full"
+              type="tel"
+              value={workHours}
+              onChange={(e) => setWorkHours(+e.target.value)}
             />
           </div>
         </div>

@@ -9,12 +9,6 @@ export type InternFeedback = {
   rating: number;
 };
 
-export type InternWorkReport = {
-  projects: string;
-  workDone: string;
-  workHours?: number;
-};
-
 export type User = {
   _id: string;
   name: string;
@@ -58,4 +52,13 @@ export type sendFeedbackBodyType = {
 export type setMentorBodyType = {
   intern_id: string;
   mentor_id: string;
+};
+
+export type uploadingWorkDetailsBodyType = {
+  name: string;
+  intern_id: string;
+  month: number;
+  project_worked: string;
+  work_description: string;
+  workHours?: number;
 };

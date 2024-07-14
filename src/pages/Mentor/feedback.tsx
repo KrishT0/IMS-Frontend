@@ -11,11 +11,9 @@ const FeedBack: FC<Intern> = ({ _id, name }) => {
   const { user } = useUser();
 
   const mentorId = user?._id;
-  const getCurrentMonthNumber = () => {
-    return dayjs().month() + 1;
-  };
+
   const submitClickHandler = async () => {
-    const month = getCurrentMonthNumber();
+    const month = dayjs().month() + 1;
     try {
       const body = {
         mentor_id: mentorId,
