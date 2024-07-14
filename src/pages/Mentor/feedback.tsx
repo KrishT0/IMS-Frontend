@@ -1,17 +1,36 @@
 import { FC, useState } from "react";
-import { Intern, InternFeedback } from "../../types";
+import { Intern } from "../../types";
 import { Rate } from "antd";
+import { useUser } from "../../store/user";
+import dayjs from "dayjs";
+import { sendFeedback } from "../../api";
 
-const FeedBack: FC<Intern> = ({ id, name }) => {
-  const [internInfo, setInternInfo] = useState<InternFeedback | null>(null);
-  const [comment, setComment] = useState("");
-  const [rating, setRating] = useState(2.5);
+const FeedBack: FC<Intern> = ({ _id, name }) => {
+  const [comment, setComment] = useState<string>("");
+  const [ratings, setRating] = useState<number>(2.5);
+  const { user } = useUser();
 
-  const submitClickHandler = () => {
-    setInternInfo({
-      comment: comment,
-      rating: rating,
-    });
+  const mentorId = user?._id;
+  const getCurrentMonthNumber = () => {
+    return dayjs().month() + 1;
+  };
+  const submitClickHandler = async () => {
+    const month = getCurrentMonthNumber();
+    try {
+      const body = {
+        mentor_id: mentorId,
+        intern_id: _id,
+        month,
+        ratings,
+        feedback: comment,
+      };
+      const response = await sendFeedback(body);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+
+    console.table([comment, ratings, mentorId, _id, month]);
   };
 
   return (
@@ -33,7 +52,7 @@ const FeedBack: FC<Intern> = ({ id, name }) => {
           <Rate
             allowHalf
             defaultValue={2.5}
-            value={rating}
+            value={ratings}
             onChange={(value) => setRating(value)}
           />
         </div>
