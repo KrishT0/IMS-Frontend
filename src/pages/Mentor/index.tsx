@@ -6,6 +6,7 @@ import { useUser } from "../../store/user";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 
 const Mentor: FC = () => {
+  const [loading, setLoading] = useState<boolean>(true);
   const [internData, setInternData] = useState<InternForMentorType[]>([]);
   const [isInternSelected, setIsInternSelected] =
     useState<InternForMentorType | null>(null);
@@ -22,17 +23,22 @@ const Mentor: FC = () => {
 
   useEffect(() => {
     try {
-      (async function () {
+      const fetchInterns = async () => {
         const body = {
           mentor_id: user?._id || "",
         };
         const response = await getInternsForMentors(body);
         setInternData(response);
-      })();
+      };
+
+      if (user?.token) {
+        fetchInterns();
+        setLoading(false);
+      }
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [user?.token]);
 
   return (
     <>
@@ -55,6 +61,8 @@ const Mentor: FC = () => {
           name={isInternSelected.name}
           department={isInternSelected.department}
         />
+      ) : loading ? (
+        <p>Loading</p>
       ) : (
         <div className="mt-10 flex flex-col items-center">
           {internData.map((intern) => {
