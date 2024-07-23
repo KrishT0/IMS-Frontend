@@ -7,6 +7,7 @@ import {
   sendFeedbackBodyType,
   setMentorBodyType,
   uploadingWorkDetailsBodyType,
+  getMonthlyReportResultType,
 } from "../types";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -128,17 +129,17 @@ export const uploadingWorkDetails: (
         },
       }
     );
-    if (response.status === 409) {
-      return {
-        message: response.data.message,
-        status: response.status,
-      } as { message: string; status: number };
-    } else {
-      return {
-        message: response.data.message,
-        status: response.status,
-      } as { message: string; status: number };
-    }
+    // if (response.status === 409) { //recheck this
+    //   return {
+    //     message: response.data.message,
+    //     status: response.status,
+    //   } as { message: string; status: number };
+    // } else {
+    return {
+      message: response.data.message,
+      status: response.status,
+    } as { message: string; status: number };
+    // }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const message =
@@ -155,5 +156,47 @@ export const uploadingWorkDetails: (
         status: 500,
       };
     }
+  }
+};
+
+export const getMonthlyReport: (body: {
+  month: number;
+}) => Promise<getMonthlyReportResultType[]> = async (body: {
+  month: number;
+}) => {
+  try {
+    const response = await axios.post(
+      `${baseUrl}/api/admin/get_monthly_report`,
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.data as getMonthlyReportResultType[];
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to get monthly report");
+  }
+};
+
+export const promotingInternToMentor: (body: {
+  intern_id: string;
+}) => Promise<{ message: string }> = async (body: { intern_id: string }) => {
+  try {
+    const response = await axios.post(
+      `${baseUrl}/api/admin/promoting_intern_to_mentor`,
+      body,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.data as { message: string };
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to promote intern to mentor");
   }
 };

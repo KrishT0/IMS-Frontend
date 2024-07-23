@@ -62,3 +62,14 @@ export type uploadingWorkDetailsBodyType = {
   work_description: string;
   workHours?: number;
 };
+
+export type getMonthlyReportResultType = {
+  name: string;
+  age: number;
+  mobile: string;
+  department: string;
+  project_worked: string;
+  work_description: string;
+  feedback: string;
+  rating: number;
+};
