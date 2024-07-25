@@ -1,4 +1,5 @@
 import axios from "axios";
+import {useUser} from "../store/user"
 import {
   getInternsForMentorsBodyType,
   InternForMentorType,
@@ -10,9 +11,10 @@ import {
   getMonthlyReportResultType,
 } from "../types";
 
+
+
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const token = JSON.parse(localStorage.getItem("user") || "{}");
-const accessToken = token?.state?.user?.token;
+const accessToken = useUser.getState().user?.token;
 
 export const verifyMobileNumber: (
   body: verifyMobileNumberBodyType
@@ -129,17 +131,11 @@ export const uploadingWorkDetails: (
         },
       }
     );
-    // if (response.status === 409) { //recheck this
-    //   return {
-    //     message: response.data.message,
-    //     status: response.status,
-    //   } as { message: string; status: number };
-    // } else {
+
     return {
       message: response.data.message,
       status: response.status,
     } as { message: string; status: number };
-    // }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const message =
