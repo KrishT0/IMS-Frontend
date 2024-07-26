@@ -12,6 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { verifyMobileNumber } from "../../api";
 import { useUser } from "../../store/user";
+import { useRefreshToken } from "../../store/refreshToken";
 import toast, { Toaster } from "react-hot-toast";
 
 declare global {
@@ -28,11 +29,18 @@ const Login: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [resendOtp, setResendOtp] = useState<boolean>(false);
   const [counter, setCounter] = useState<number>(30);
+
   const { setUser, setToken } = useUser();
+  const { setRefreshToken } = useRefreshToken();
 
   const navigate = useNavigate();
 
-  console.log("login page");
+  /**
+   *
+   * @description This useEffect will check if the user is already logged in or not.
+   *  If the user is already logged in, then it will redirect the user to the home page.
+   *  If the user is not logged in, then it will show the login page.
+   */
   useEffect(() => {
     let unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
@@ -45,6 +53,10 @@ const Login: FC = () => {
     };
   }, []);
 
+  /**
+   *
+   * @description This useEffect will start a timer for 30 seconds when the OTP is sent.
+   */
   useEffect(() => {
     let timer: any;
     if (otpSent) {
@@ -65,6 +77,11 @@ const Login: FC = () => {
     setCounter(30);
   };
 
+  /**
+   *
+   * @description This function will create a new captcha.
+   * If the captcha is already created, then it will use the existing captcha.
+   */
   const onVerifyCaptcha = () => {
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(
@@ -81,8 +98,13 @@ const Login: FC = () => {
     }
   };
 
+  /**
+   *
+   * @description This function will verify the mobile number.
+   * If the mobile number is not found, then it will show an error message.
+   * If the mobile number is found, then it will store details of user in zustand store in localstorage.
+   */
   const onSignup = async () => {
-    console.log(phoneNumber);
     setLoading(true);
     try {
       const body = { mobile: phoneNumber };
@@ -114,12 +136,19 @@ const Login: FC = () => {
     }
   };
 
+  /**
+   * @description This function will verify the OTP.
+   * If the OTP is invalid, then it will show an error message.
+   * If the OTP is valid, then it will store the token and refresh token in zustand store in localstorage.
+   * It will also redirect the user to the home page.
+   */
   const onVerifyOtp = () => {
     if (!window.confirmationResult) return;
     setLoading(true);
     window.confirmationResult
       .confirm(otp)
       .then((userCredential: any) => {
+        setRefreshToken(userCredential.user.refreshToken);
         setToken(userCredential.user.accessToken);
         setLoading(false);
         navigate("/app/home");
@@ -132,6 +161,10 @@ const Login: FC = () => {
       });
   };
 
+  /**
+   *
+   * @description This function will handle the login button role.
+   */
   const loginButtonRole = () => {
     if (otpSent) {
       onVerifyOtp();
@@ -140,6 +173,10 @@ const Login: FC = () => {
     }
   };
 
+  /**
+   *
+   * @description This function will resend the OTP and will also verify the captcha and restart opt timer.
+   */
   const onResendOtp = () => {
     onVerifyCaptcha();
     const formatedPhoneNumber = `+91${phoneNumber}`;
@@ -155,8 +192,25 @@ const Login: FC = () => {
       });
   };
 
+  /**
+   *
+   * @param newOtp string
+   * @description This function will handle the OTP change.
+   */
   const handleOtpChange = (newOtp: string) => {
     setOtp(newOtp.replace(/\s/g, ""));
+  };
+
+  /**
+   *
+   * @param event React.ChangeEvent<HTMLInputElement>
+   * @description This function will handle the phone number change and remove white space.
+   */
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\s+/g, "");
+    if (/^\d{0,10}$/.test(value)) {
+      setPhoneNumber(value);
+    }
   };
 
   return (
@@ -185,7 +239,7 @@ const Login: FC = () => {
             className="border-2 border-gray-300 p-2 mt-5 rounded-md w-96 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
             type="tel"
             value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            onChange={handlePhoneNumberChange}
             placeholder="10-digit Phone number"
           />
         ) : (
