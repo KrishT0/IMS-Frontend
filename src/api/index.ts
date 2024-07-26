@@ -1,5 +1,5 @@
 import axios from "axios";
-import {useUser} from "../store/user"
+import { useUser } from "../store/user";
 import {
   getInternsForMentorsBodyType,
   InternForMentorType,
@@ -10,8 +10,7 @@ import {
   uploadingWorkDetailsBodyType,
   getMonthlyReportResultType,
 } from "../types";
-
-
+import { BackToLogin } from "../utils/BacktoLogin";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const accessToken = useUser.getState().user?.token;
@@ -172,7 +171,10 @@ export const getMonthlyReport: (body: {
     );
     return response.data as getMonthlyReportResultType[];
   } catch (error) {
-    console.log(error);
+    console.log((error as any).response.data.tokenExpired);
+    if ((error as any).response.data.tokenExpired) {
+      BackToLogin();
+    }
     throw new Error("Failed to get monthly report");
   }
 };
