@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useUser } from "../store/user";
+import { useRefreshToken } from "../store/refreshToken";
 import {
   getInternsForMentorsBodyType,
   InternForMentorType,
@@ -10,11 +11,18 @@ import {
   uploadingWorkDetailsBodyType,
   getMonthlyReportResultType,
 } from "../types";
-import { BackToLogin } from "../utils/BacktoLogin";
+// import { BackToLogin } from "../utils/BacktoLogin";
+import { getNewAccessToken } from "../utils/AceessToken";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const accessToken = useUser.getState().user?.token;
+const refreshToken = useRefreshToken.getState().refreshToken;
 
+/**
+ *
+ * @description API to verify if the mobile number of user exist or not.
+ * @returns User details if the mobile number exist.
+ */
 export const verifyMobileNumber: (
   body: verifyMobileNumberBodyType
 ) => Promise<UserType[]> = async (body: verifyMobileNumberBodyType) => {
@@ -30,6 +38,11 @@ export const verifyMobileNumber: (
   }
 };
 
+/**
+ *
+ * @description API to get list of interns for mentors.
+ * @returns array of interns along with their details.
+ */
 export const getInternsForMentors: (
   body: getInternsForMentorsBodyType
 ) => Promise<InternForMentorType[]> = async (
@@ -52,6 +65,11 @@ export const getInternsForMentors: (
   }
 };
 
+/**
+ *
+ * @description API for mentors to send feedback on interns.
+ * @returns a message string that the feedback is sent successfully.
+ */
 export const sendFeedback: (
   body: sendFeedbackBodyType
 ) => Promise<{ message: string }> = async (body: sendFeedbackBodyType) => {
@@ -72,6 +90,11 @@ export const sendFeedback: (
   }
 };
 
+/**
+ *
+ * @description API for interns to select mentor.
+ * @returns a message string that the mentor is selected successfully.
+ */
 export const selectingMentor: (
   body: setMentorBodyType
 ) => Promise<{ message: string }> = async (body: setMentorBodyType) => {
@@ -92,6 +115,11 @@ export const selectingMentor: (
   }
 };
 
+/**
+ *
+ * @description API for interns to get list of mentors.
+ * @returns array of mentors along with their details.
+ */
 export const getMentorsForInterns: (body: {
   department: string;
 }) => Promise<{ _id: string; name: string }[]> = async (body: {
@@ -114,6 +142,11 @@ export const getMentorsForInterns: (body: {
   }
 };
 
+/**
+ *
+ * @description API for interns to upload work details.
+ * @returns a message string that the work details are uploaded successfully.
+ */
 export const uploadingWorkDetails: (
   body: uploadingWorkDetailsBodyType
 ) => Promise<{
@@ -154,6 +187,11 @@ export const uploadingWorkDetails: (
   }
 };
 
+/**
+ *
+ * @description API for admins to download monthly report.
+ * @returns array of interns along with their details.
+ */
 export const getMonthlyReport: (body: {
   month: number;
 }) => Promise<getMonthlyReportResultType[]> = async (body: {
@@ -173,12 +211,18 @@ export const getMonthlyReport: (body: {
   } catch (error) {
     console.log((error as any).response.data.tokenExpired);
     if ((error as any).response.data.tokenExpired) {
-      BackToLogin();
+      // BackToLogin();
+      getNewAccessToken();
     }
     throw new Error("Failed to get monthly report");
   }
 };
 
+/**
+ *
+ * @ignore
+ * @description API for admins to promote intern to mentor.
+ */
 export const promotingInternToMentor: (body: {
   intern_id: string;
 }) => Promise<{ message: string }> = async (body: { intern_id: string }) => {
@@ -196,5 +240,30 @@ export const promotingInternToMentor: (body: {
   } catch (error) {
     console.log(error);
     throw new Error("Failed to promote intern to mentor");
+  }
+};
+
+/**
+ *
+ * @description API for requesting new accesstoken using refresh token.
+ * @returns new accesstoken.
+ */
+export const requestingNewAccessToken: () => Promise<{
+  accessToken: string;
+}> = async () => {
+  try {
+    const response = await axios.post(
+      `${baseUrl}/api/auth/request-new-access-token`,
+      { refreshToken },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.data as { accessToken: string };
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to refresh token");
   }
 };
