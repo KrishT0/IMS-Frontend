@@ -12,7 +12,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import { verifyMobileNumber } from "../../api";
 import { useUser } from "../../store/user";
-import { useRefreshToken } from "../../store/refreshToken";
 import toast, { Toaster } from "react-hot-toast";
 
 declare global {
@@ -31,8 +30,6 @@ const Login: FC = () => {
   const [counter, setCounter] = useState<number>(30);
 
   const { setUser, setToken } = useUser();
-  const { setRefreshToken } = useRefreshToken();
-
   const navigate = useNavigate();
 
   /**
@@ -139,7 +136,7 @@ const Login: FC = () => {
   /**
    * @description This function will verify the OTP.
    * If the OTP is invalid, then it will show an error message.
-   * If the OTP is valid, then it will store the token and refresh token in zustand store in localstorage.
+   * If the OTP is valid, then it will store the access token and refresh token in zustand store in localstorage.
    * It will also redirect the user to the home page.
    */
   const onVerifyOtp = () => {
@@ -148,7 +145,6 @@ const Login: FC = () => {
     window.confirmationResult
       .confirm(otp)
       .then((userCredential: any) => {
-        setRefreshToken(userCredential.user.refreshToken);
         setToken(userCredential.user.accessToken);
         setLoading(false);
         navigate("/app/home");
