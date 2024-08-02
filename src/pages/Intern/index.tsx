@@ -19,8 +19,11 @@ const Intern: FC = () => {
     !!user?.mentor
   );
 
-  console.log("isMentorSelected", isMentorSelected);
-
+  /**
+   *
+   * @description This function will fetch the mentors for the intern on component mount.
+   * If mentor is already selected then it will not fetch the mentors.
+   */
   useEffect(() => {
     const fetchMentors = async () => {
       try {
@@ -38,6 +41,11 @@ const Intern: FC = () => {
     fetchMentors();
   }, []);
 
+  /**
+   *
+   * @param mentorId ID of the mentor selected by the intern.
+   * @description This function will call API to map intern with its selected mentor in DB.
+   */
   const mentorClickHandler = async (mentorId: string) => {
     const body = {
       mentor_id: mentorId,
@@ -57,6 +65,11 @@ const Intern: FC = () => {
     }
   };
 
+  /**
+   *
+   * @description This function will call API to upload the work details of the intern for current month.
+   * If already uploaded for current month then it will show the error message.
+   */
   const submitClickHandler = async () => {
     try {
       const intern_id = user?._id!;
@@ -90,7 +103,7 @@ const Intern: FC = () => {
   return (
     <div className="mt-10 p-5">
       <Toaster position="top-center" />
-      <h1 className="text-3xl font-medium text-center">Inter user</h1>
+      <h1 className="text-3xl font-medium text-center">Intern user</h1>
       {isMentorSelected ? (
         <div>
           <div className="">
