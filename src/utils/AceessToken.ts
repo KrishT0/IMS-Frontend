@@ -5,7 +5,7 @@ import { onAuthStateChanged } from "firebase/auth";
 
 /**
  *
- * @description Function to get a new access token.
+ * @description Function to get a new access token from firebase.
  */
 export const getNewAccessToken = async (API: any) => {
   onAuthStateChanged(auth, async (user) => {

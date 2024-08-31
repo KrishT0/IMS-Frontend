@@ -11,7 +11,6 @@ import {
   uploadingWorkDetailsBodyType,
   getMonthlyReportResultType,
 } from "../types";
-// import { BackToLogin } from "../utils/BacktoLogin";
 import { getNewAccessToken } from "../utils/AceessToken";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -60,6 +59,10 @@ export const getInternsForMentors: (
     );
     return response.data.interns as InternForMentorType[];
   } catch (error) {
+    console.log((error as any).response.data.tokenExpired);
+    if ((error as any).response.data.tokenExpired) {
+      getNewAccessToken(getInternsForMentors);
+    }
     console.log(error);
     throw new Error("Failed to get interns for mentors");
   }
@@ -85,6 +88,10 @@ export const sendFeedback: (
     );
     return response.data as { message: string };
   } catch (error) {
+    console.log((error as any).response.data.tokenExpired);
+    if ((error as any).response.data.tokenExpired) {
+      getNewAccessToken(sendFeedback);
+    }
     console.log(error);
     throw new Error("Failed to send feedback");
   }
@@ -110,6 +117,10 @@ export const selectingMentor: (
     );
     return response.data as { message: string };
   } catch (error) {
+    console.log((error as any).response.data.tokenExpired);
+    if ((error as any).response.data.tokenExpired) {
+      getNewAccessToken(selectingMentor);
+    }
     console.log(error);
     throw new Error("Failed to set mentor");
   }
@@ -137,6 +148,10 @@ export const getMentorsForInterns: (body: {
     );
     return response.data as { _id: string; name: string }[];
   } catch (error) {
+    console.log((error as any).response.data.tokenExpired);
+    if ((error as any).response.data.tokenExpired) {
+      getNewAccessToken(getMentorsForInterns);
+    }
     console.log(error);
     throw new Error("Failed to get mentors for interns");
   }
@@ -169,6 +184,10 @@ export const uploadingWorkDetails: (
       status: response.status,
     } as { message: string; status: number };
   } catch (error) {
+    console.log((error as any).response.data.tokenExpired);
+    if ((error as any).response.data.tokenExpired) {
+      getNewAccessToken(uploadingWorkDetails);
+    }
     if (axios.isAxiosError(error)) {
       const message =
         error.response?.data.message ?? "An unknown error occurred";
@@ -211,8 +230,7 @@ export const getMonthlyReport: (body: {
   } catch (error) {
     console.log((error as any).response.data.tokenExpired);
     if ((error as any).response.data.tokenExpired) {
-      // BackToLogin();
-      getNewAccessToken();
+      getNewAccessToken(getMonthlyReport);
     }
     throw new Error("Failed to get monthly report");
   }
@@ -245,7 +263,8 @@ export const promotingInternToMentor: (body: {
 
 /**
  *
- * @description API for requesting new accesstoken using refresh token.
+ * @ignore
+ * @description API for requesting new accesstoken using firebase refresh token.
  * @returns new accesstoken.
  */
 export const requestingNewAccessToken: () => Promise<{

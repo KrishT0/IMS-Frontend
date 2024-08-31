@@ -5,6 +5,11 @@ import { getInternsForMentors } from "../../api";
 import { useUser } from "../../store/user";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 
+/**
+ *
+ * This functional component will render the mentor component.
+ * @returns JSX.Element
+ */
 const Mentor: FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [internData, setInternData] = useState<InternForMentorType[]>([]);
@@ -12,15 +17,28 @@ const Mentor: FC = () => {
     useState<InternForMentorType | null>(null);
   const { user } = useUser();
 
+  /**
+   *
+   * This function will handle the back button click event.
+   */
   const backClickHandler = () => {
     setIsInternSelected(null);
   };
 
+  /**
+   *
+   * @param intern intern details (name, department, _id)
+   * This function will handle the intern click event.
+   */
   const handleInternClick = (intern: InternForMentorType) => {
     console.log(`Intern clicked: ${intern.name}`);
     setIsInternSelected(intern);
   };
 
+  /**
+   *
+   * This function will fetch the interns for the mentor on component mount.
+   */
   useEffect(() => {
     try {
       const fetchInterns = async () => {
@@ -65,20 +83,22 @@ const Mentor: FC = () => {
         <p>Loading</p>
       ) : (
         <div className="mt-10 flex flex-col items-center">
-          {internData.map((intern) => {
-            return (
-              <div
-                key={intern._id}
-                className="flex border-2 mt-5 w-full text-xl hover:drop-shadow-lg hover:duration-100 hover:bg-slate-200 cursor-pointer"
-                onClick={() => handleInternClick(intern)}
-              >
-                <div className="flex justify-between w-full">
+          <h2 className="text-xl font-semibold">
+            Select the intern you want to review.
+          </h2>
+          <div className="grid grid-flow-col w-full gap-5 p-2">
+            {internData.map((intern) => {
+              return (
+                <div
+                  key={intern._id}
+                  className="flex bg-slate-200 justify-center rounded-md p-2 h-fit mt-5 w-full text-xl hover:drop-shadow-lg hover:duration-100 hover:bg-slate-200 cursor-pointer"
+                  onClick={() => handleInternClick(intern)}
+                >
                   <p>{intern.name}</p>
-                  <p>{intern.department}</p>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
     </>
