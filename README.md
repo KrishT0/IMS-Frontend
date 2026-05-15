@@ -1,30 +1,15 @@
-# React + TypeScript + Vite
+## Intern Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a simple Intern Management System that allows an organisation to manage interns from onboarding to FTE conversion.
 
-Currently, two official plugins are available:
+## Users
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Admins** : Can add and remove interns and can convert interns to FTE/Mentors. Can also download monthly reports of interns in excel format.
+- **Mentor** : Can view assigned taks of interns and has to review and submit monthly reports of interns.
+- **Intern** : Can view assigned tasks and submit their works for review.
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- **Frontend** : Typescript, ReactJS, Ant Design
+- **Backend** : NodeJS, ExpressJS, Mongoose
+- **Database** : MongoDB

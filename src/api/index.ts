@@ -18,13 +18,12 @@ const accessToken = useUser.getState().user?.token;
 const refreshToken = useRefreshToken.getState().refreshToken;
 
 /**
- *
  * @description API to verify if the mobile number of user exist or not.
  * @returns User details if the mobile number exist.
  */
-export const verifyMobileNumber: (
+export const verifyMobileNumber = async (
   body: verifyMobileNumberBodyType
-) => Promise<UserType[]> = async (body: verifyMobileNumberBodyType) => {
+): Promise<UserType[]> => {
   try {
     const response = await axios.post(
       `${baseUrl}/api/auth/verify-mobile`,
@@ -38,15 +37,12 @@ export const verifyMobileNumber: (
 };
 
 /**
- *
  * @description API to get list of interns for mentors.
  * @returns array of interns along with their details.
  */
-export const getInternsForMentors: (
+export const getInternsForMentors = async (
   body: getInternsForMentorsBodyType
-) => Promise<InternForMentorType[]> = async (
-  body: getInternsForMentorsBodyType
-) => {
+): Promise<InternForMentorType[]> => {
   try {
     const response = await axios.post(
       `${baseUrl}/api/mentor/get_interns`,
@@ -69,13 +65,12 @@ export const getInternsForMentors: (
 };
 
 /**
- *
  * @description API for mentors to send feedback on interns.
  * @returns a message string that the feedback is sent successfully.
  */
-export const sendFeedback: (
+export const sendFeedback = async (
   body: sendFeedbackBodyType
-) => Promise<{ message: string }> = async (body: sendFeedbackBodyType) => {
+): Promise<{ message: string }> => {
   try {
     const response = await axios.post(
       `${baseUrl}/api/mentor/feedback_submission`,
@@ -98,13 +93,12 @@ export const sendFeedback: (
 };
 
 /**
- *
  * @description API for interns to select mentor.
  * @returns a message string that the mentor is selected successfully.
  */
-export const selectingMentor: (
+export const selectingMentor = async (
   body: setMentorBodyType
-) => Promise<{ message: string }> = async (body: setMentorBodyType) => {
+): Promise<{ message: string }> => {
   try {
     const response = await axios.post(
       `${baseUrl}/api/intern/selecting_mentor`,
@@ -127,7 +121,6 @@ export const selectingMentor: (
 };
 
 /**
- *
  * @description API for interns to get list of mentors.
  * @returns array of mentors along with their details.
  */
@@ -158,7 +151,6 @@ export const getMentorsForInterns: (body: {
 };
 
 /**
- *
  * @description API for interns to upload work details.
  * @returns a message string that the work details are uploaded successfully.
  */
@@ -207,7 +199,6 @@ export const uploadingWorkDetails: (
 };
 
 /**
- *
  * @description API for admins to download monthly report.
  * @returns array of interns along with their details.
  */
@@ -237,7 +228,6 @@ export const getMonthlyReport: (body: {
 };
 
 /**
- *
  * @ignore
  * @description API for admins to promote intern to mentor.
  */
@@ -262,7 +252,6 @@ export const promotingInternToMentor: (body: {
 };
 
 /**
- *
  * @ignore
  * @description API for requesting new accesstoken using firebase refresh token.
  * @returns new accesstoken.
